@@ -2,12 +2,22 @@ public class PricingEngine {
 
     public double calculate(double[] prices, int[] quantities, String customerType, String discountCode) {
 
-        double subtotal = 0;
+        double subtotal = calculateSubtotal(prices, quantities);
+        double discount = calculateDiscount(subtotal, customerType, discountCode);
+        double tax = calculateTax(subtotal - discount);
 
+        return subtotal - discount + tax;
+    }
+
+    private double calculateSubtotal(double[] prices, int[] quantities) {
+        double total = 0;
         for (int i = 0; i < prices.length; i++) {
-            subtotal += prices[i] * quantities[i];
+            total += prices[i] * quantities[i];
         }
+        return total;
+    }
 
+    private double calculateDiscount(double subtotal, String customerType, String discountCode) {
         double discount = 0;
 
         if (discountCode.equals("SAVE10")) {
@@ -20,8 +30,10 @@ public class PricingEngine {
             discount += subtotal * 0.05;
         }
 
-        double tax = (subtotal - discount) * 0.19;
+        return discount;
+    }
 
-        return subtotal - discount + tax;
+    private double calculateTax(double amount) {
+        return amount * 0.19;
     }
 }
